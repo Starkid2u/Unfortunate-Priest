@@ -23,6 +23,15 @@ guncooldown = 0
 gundmg = random.randrange(1, 100, 1)
 @client.event
 async def on_message(message):
+    # linking status
+    standowner = discord.utils.get(message.guild.members, id = my_id)
+    try:
+        if standowner.activity.name == "Spotify":
+            await client.change_presence(status=standowner.status, activity=discord.Activity(name=standowner.activity.name, type=discord.ActivityType.listening))
+    except AttributeError:
+        await client.change_presence(status=standowner.status, activity=standowner.activity)
+    
+    
     async def unvist():
         if not (visitor in message.author.roles or dead_visitor in message.author.roles):
             return
@@ -265,14 +274,10 @@ async def on_message(message):
 @client.event
 async def on_member_update(before, after):
     if after.id == my_id:
-        playing = after.activity
-        if after.status == discord.Status.online:
-            await client.change_presence(status=discord.Status.online, activity=playing)
-        if after.status == discord.Status.idle:
-            await client.change_presence(status=discord.Status.idle, activity=playing)
-        if after.status == discord.Status.dnd:
-            await client.change_presence(status=discord.Status.dnd, activity=playing)
-        if after.status == discord.Status.offline:
-            await client.change_presence(status=discord.Status.offline, activity=playing)
+        try:
+            if after.activity.name == "Spotify":
+                await client.change_presence(status=after.status, activity=discord.Activity(name=after.activity.name, type=discord.ActivityType.listening))
+        except AttributeError:
+            await client.change_presence(status=after.status, activity=after.activity)
 
 client.run(token)
