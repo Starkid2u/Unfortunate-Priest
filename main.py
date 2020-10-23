@@ -7,13 +7,15 @@ from discord.ext import commands
 import asyncio
 import random
 
+intents = discord.Intents.all()
+
 with open("tokenfile", "r") as tokenfile:
     token=tokenfile.read()
 
 my_id = 571603546525663234
 
 
-client = discord.Client()
+client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():
